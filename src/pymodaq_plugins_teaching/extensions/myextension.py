@@ -6,16 +6,16 @@ from qtpy import QtWidgets, QtCore
 
 from pymodaq.utils.plotting.data_viewers.viewer1D import Viewer1D
 from pymodaq.utils.plotting.data_viewers.viewer2D import Viewer2D
+import pymodaq.utils.gui_utils
 
-
-config = utils.load_config()
+config = utils.Config()
 logger = utils.set_logger(utils.get_module_name(__file__))
 
-EXTENSION_NAME = 'MY_EXTENSION_NAME'
-CLASS_NAME = 'MyExtension'
+EXTENSION_NAME = 'BEAM_PROFILER'
+CLASS_NAME = 'BeamProfiler'
 
 
-class MyExtension(gutils.CustomApp):
+class BeamProfiler(gutils.CustomApp):
     # list of dicts enabling the settings tree on the user interface
     params = [
         {'title': 'Main settings:', 'name': 'main_settings', 'type': 'group', 'children': [
@@ -40,10 +40,28 @@ class MyExtension(gutils.CustomApp):
 
     def __init__(self, dockarea, dashboard):
         super().__init__(dockarea, dashboard)
+
+        # init the object parameters
+        self.raw_data: DataToExport = None
+
+
         self.setup_ui()
 
     def connect_things(self):
-        pass
+        '''
+        subclass method from CustomApp
+        '''
+        logger.debug('connecting things')
+        self.log_signal[str].connect(self.add_log)  # connect together this custom signal with the add_log method
+
+        self.detector.grab_done_signal.connect(self.data_done)
+        self.connect_action('quit', self.quit_function)
+        self.connect_action('load', self.load_file)
+        self.connect_action('save', self.save_data)
+
+        self.connect_action('grab', self.detector.grab)
+        self.connect_action('show', self.show_detector)
+        logger.debug('connecting done')
 
     def setup_docks(self):
         """

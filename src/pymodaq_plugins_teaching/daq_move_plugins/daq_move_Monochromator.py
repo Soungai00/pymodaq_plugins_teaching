@@ -3,9 +3,7 @@ from typing import Union, List, Dict
 from pymodaq.control_modules.move_utility_classes import (DAQ_Move_base, comon_parameters_fun,
                                                           main, DataActuatorType, DataActuator)
 from pymodaq_utils.utils import ThreadCommand  # object used to send info back to the main thread
-from pymodaq.control_modules.thread_commands import ThreadStatus
 from pymodaq_gui.parameter import Parameter
-from pymodaq_data import Q_
 from pymodaq_plugins_teaching.hardware.spectrometer import Spectrometer
 
 
@@ -101,7 +99,6 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
         self.controller.find_reference()
         info = "Whatever info you want to log"
         initialized = self.controller.open_communication()
-        self.emit_status(ThreadCommand(ThreadStatus.UPDATE_UI, 'set_abs_value_green', args=(Q_('300nm'))))
         return info, initialized
 
     def move_abs(self, value: DataActuator):

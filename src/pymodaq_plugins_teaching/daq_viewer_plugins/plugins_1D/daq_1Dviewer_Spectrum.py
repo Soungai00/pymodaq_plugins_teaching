@@ -9,7 +9,7 @@ from pymodaq.utils.data import DataFromPlugins
 from pymodaq_plugins_teaching.hardware.spectrometer import Spectrometer
 from pymodaq_data.data import Axis
 
-class DAQ_1DViewer_Photodiode(DAQ_Viewer_base):
+class DAQ_1DViewer_Spectrum(DAQ_Viewer_base):
     """ Instrument plugin class for a OD viewer.
     
     This object inherits all functionalities to communicate with PyMoDAQ’s DAQ_Viewer module through inheritance via

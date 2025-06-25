@@ -33,16 +33,15 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
     _epsilon: Union[float, List[float]] = 0.1
     data_actuator_type = DataActuatorType.DataActuator
 
-    params = ([{'title': 'Info', 'name': 'info', 'type': 'str', 'value': '', 'readonly': True},
-               {'title': 'Gratings', 'name': 'gratings', 'type': 'list', 'limits': Spectrometer.gratings,
-                'value':Spectrometer.gratings[0]},
-               {'title': 'Tau', 'name': 'tau', 'type': 'float', 'value': 0.},
-               {'title': 'Offset Mono', 'name': 'offset', 'type': 'float', 'value': 0., 'suffix': 'nm'}]
-              + comon_parameters_fun(is_multiaxes, axis_names=_axis_names, epsilon=_epsilon))
+    params = [  {'title': 'Info:', 'name': 'info', 'type': 'str', 'value': '', 'readonly': True},
+                {'title': 'Gratings:', 'name': 'grating', 'type': 'list',
+                 'value': Spectrometer.gratings[0], 'limits': Spectrometer.gratings},# TODO for your custom plugin: elements to be added here as dicts in order to control your custom stage
+                ] + comon_parameters_fun(is_multiaxes, axis_names=_axis_names, epsilon=_epsilon)
+    # _epsilon is the initial default value for the epsilon parameter allowing pymodaq to know if the controller reached
+    # the target value. It is the developer responsibility to put here a meaningful value
 
     def ini_attributes(self):
         self.controller: Spectrometer = None
-        self.offset = 0.
 
     def get_actuator_value(self):
         """Get the current value from the hardware with scaling conversion.
@@ -51,7 +50,8 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
         -------
         float: The position obtained after scaling conversion.
         """
-        pos = DataActuator(data=self.controller.get_wavelength())  # when writing your own plugin replace this line
+        pos = DataActuator(data=self.controller.get_wavelength(),
+                           units='nm')
         pos = self.get_position_with_scaling(pos)
         return pos
 
@@ -69,14 +69,17 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
             A given parameter (within detector_settings) whose value has been changed by the user
         """
         if param.name() == 'axis':
-            self.axis_unit = self.controller.get_wavelength_axis()
-        elif param.name() == 'gratings':
-            self.controller.grating(self.settings.child('gratings').value())
-            self.get_actuator_value()
-        elif param.name() == 'tau':
-            self.controller.tau = self.settings.child('tau').value()
-        elif param.name() == 'offset':
-            self.offset = self.settings.child('offset').value()
+            self.axis_unit = self.controller.your_method_to_get_correct_axis_unit()
+            # do this only if you can and if the units are not known beforehand, for instance
+            # if the motors connected to the controller are of different type (mm, µm, nm, , etc...)
+            # see BrushlessDCMotor from the thorlabs plugin for an exemple
+
+        elif param.name() == "grating":
+           self.controller.grating = param.value()
+           self.get_actuator_value()
+           self.emit_status(ThreadCommand('Update_Status',
+                                          [f'Grating changed to {self.controller.grating}']))
+
         else:
             pass
 
@@ -95,11 +98,16 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
             False if initialization failed otherwise True
         """
         if self.is_master:  # is needed when controller is master
-            self.controller = Spectrometer()
-        self.settings.child('info').setValue(self.controller.infos)
-        self.controller.find_reference()
+            self.controller = Spectrometer() #  arguments for instantiation!)
+            initialized = self.controller.open_communication()  # todo
+
+        else:
+            self.controller = controller
+            initialized = True
+
         info = "Whatever info you want to log"
-        initialized = self.controller.open_communication()
+
+        self.settings.child('info').setValue(self.controller.infos)
         return info, initialized
 
     def move_abs(self, value: DataActuator):
@@ -110,19 +118,31 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
         value: (float) value of the absolute target positioning
         """
 
-        value = self.check_bound(value+DataActuator(name='myoffset',
-                                                    data=self.offset,
-                                                    units='nm'))
+        value = self.check_bound(value)
         self.target_value = value
-        value = self.set_position_with_scaling(value)
+        value = self.set_position_with_scaling(value)  # apply scaling if the user specified one
 
-        self.controller.set_wavelength(value.value())
-        self.emit_status(ThreadCommand('Update_Status', ['Value set']))
+        self.controller.set_wavelength(value.value(self.axis_unit), 'abs')
+        self.emit_status(ThreadCommand('Update_Status', ['Some info you want to log']))
 
-    def move_home(self,  value: DataActuator):
+    def move_rel(self, value: DataActuator):
+        """ Move the actuator to the relative target actuator value defined by value
+
+        Parameters
+        ----------
+        value: (float) value of the relative target positioning
+        """
+        value = self.check_bound(self.current_position + value) - self.current_position
+        self.target_value = value + self.current_position
+        value = self.set_position_relative_with_scaling(value)
+
+        self.controller.set_wavelength(value.value(self.axis_unit), 'rel')  # when writing your own plugin replace this line
+        self.emit_status(ThreadCommand('Update_Status', ['Some info you want to log']))
+
+    def move_home(self):
         """Call the reference method of the controller"""
-        self.controller.find_reference()
-        self.emit_status(ThreadCommand('Update_Status', ['Back to home']))
+
+        self.move_abs(DataActuator('myname', 500, units='nm'))
 
     def stop_motion(self):
       """Stop the actuator and emits move_done signal"""
@@ -132,4 +152,4 @@ class DAQ_Move_Monochromator(DAQ_Move_base):
 
 
 if __name__ == '__main__':
-    main(__file__)
+    main(__file__, init=False)

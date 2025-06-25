@@ -5,9 +5,10 @@ from pymodaq_data.data import DataToExport
 from pymodaq_gui.parameter import Parameter
 
 from pymodaq.control_modules.viewer_utility_classes import DAQ_Viewer_base, comon_parameters, main
-from pymodaq.utils.data import DataFromPlugins
+from pymodaq.utils.data import DataFromPlugins, Axis
+
 from pymodaq_plugins_teaching.hardware.spectrometer import Spectrometer
-from pymodaq_data.data import Axis
+
 
 class DAQ_1DViewer_Spectrum(DAQ_Viewer_base):
     """ Instrument plugin class for a OD viewer.
@@ -86,24 +87,18 @@ class DAQ_1DViewer_Spectrum(DAQ_Viewer_base):
         kwargs: dict
             others optionals arguments
         """
-        # synchrone version (blocking function)
-        data_tot = self.controller.grab_spectrum()
-        self.dte_signal.emit(DataToExport(name='1DPhotodiode',
-                                          data=[DataFromPlugins(name='Photodiode',
-                                                                data=data_tot,
-                                                                axes=[Axis(label='Wavelength',
-                                                                           units="nm",
-                                                                           data=self.controller.get_wavelength_axis(),
-                                                                           index=0)],
-                                                                dim='Data1D',
-                                                                labels=['dat0', 'data1'])]))
+        ## TODO for your custom plugin: you should choose EITHER the synchrone or the asynchrone version following
+        self.dte_signal.emit(DataToExport(
+            name='mydte',
+            data=[DataFromPlugins(name='mymock',
+                                  data=[self.controller.grab_spectrum()],
+                                  dim='Data1D', labels=['label00',],
+                                  axes=[Axis('Wavelength', units='m',
+                                             data=self.controller.get_wavelength_axis()*1e-9)])]))
 
     def stop(self):
         """Stop the current grab hardware wise if necessary"""
         self.controller.stop()
-        self.emit_status(ThreadCommand('Update_Status', ['Some info you want to log']))
-        ##############################
-        return ''
 
 
 if __name__ == '__main__':

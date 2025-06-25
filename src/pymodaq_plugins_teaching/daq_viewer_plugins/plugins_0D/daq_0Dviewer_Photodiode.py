@@ -88,16 +88,12 @@ class DAQ_0DViewer_Photodiode(DAQ_Viewer_base):
         # synchrone version (blocking function)
         data_tot = self.controller.grab_monochromator()
         self.dte_signal.emit(DataToExport(name='myplugin',
-                                          data=[DataFromPlugins(name='Mock1', data=data_tot,
+                                          data=[DataFromPlugins(name='intensity', data=data_tot,
                                                                 dim='Data0D', labels=['dat0', 'data1'])]))
 
     def stop(self):
         """Stop the current grab hardware wise if necessary"""
         self.controller.stop()
-        self.emit_status(ThreadCommand('Update_Status', ['Some info you want to log']))
-        ##############################
-        return ''
-
 
 if __name__ == '__main__':
     main(__file__)

@@ -22,8 +22,8 @@ class GenExt(CustomExt):
          'limits': (1, 1000), 'subtype': 'linear'},
     ]
 
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self, parent, dashboard):
+        super().__init__(parent, dashboard)
         self.viewer1D_raw: Optional[Viewer1D] = None
         self.viewer1D_fft: Optional[Viewer1D] = None
         self.daq_viewer: DAQ_Viewer = self.modules_manager.get_mod_from_name('Generator')
@@ -33,12 +33,11 @@ class GenExt(CustomExt):
         self.setup_ui()
 
     def setup_docks(self):
-        self.docks['daq_viewer'] = Dock('DAQViewer Generator')
         self.docks['raw_viewer'] = Dock('Raw Viewer')
         self.docks['fft_viewer'] = Dock('FFT Viewer')
         self.docks['settings'] = Dock('Settings')
 
-        self.dockarea.addDock(self.docks['daq_viewer'])
+
         self.dockarea.addDock(self.docks['raw_viewer'], 'right')
         self.dockarea.addDock(self.docks['fft_viewer'], 'bottom', self.docks['raw_viewer'])
         self.dockarea.addDock(self.docks['settings'], 'right')
@@ -52,19 +51,9 @@ class GenExt(CustomExt):
         dockarea = DockArea()
         main_window = QtWidgets.QMainWindow()
         main_window.setCentralWidget(dockarea)
-        self.docks['daq_viewer'].addWidget(main_window)
-        self.daq_viewer = DAQ_Viewer(dockarea)
-
-        self.daq_viewer.daq_type = DAQTypesEnum.DAQ1D
-        QtWidgets.QApplication.processEvents()
-        self.daq_viewer.detector = 'Generator'
-
-        self.docks['daq_viewer'].setVisible(False)
 
         self.docks['settings'].addWidget(self.settings_tree)
 
-        self.daq_viewer.init_hardware_ui(True)
-        QtWidgets.QApplication.processEvents()
         self.daq_viewer.settings.child('main_settings', 'wait_time').setValue(50)
         self.daq_viewer.snap()
 

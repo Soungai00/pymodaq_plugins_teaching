@@ -37,7 +37,9 @@ class DAQ_1DViewer_Generator(DAQ_Viewer_base):
         {'title': 'Delta time (s):', 'name': 'delta_t', 'type': 'float', 'value': 1e-3},
         {'title': 'Waveforms:', 'name': 'waveform', 'type': 'list', 'limits': WaveType.names()},
         {'title': 'Amplitude:', 'name': 'amplitude', 'type': 'float', 'value': 1, 'suffix': 'V', 'siPrefix': True},
-        ]
+        {'title': 'Frequency:', 'name': 'frequency', 'type': 'float', 'value': 10, 'suffix': 'Hz', 'siPrefix': True},
+
+    ]
 
     def ini_attributes(self):
         #  TODO declare the type of the wrapper (and assign it to self.controller) you're going to use for easy
@@ -58,7 +60,8 @@ class DAQ_1DViewer_Generator(DAQ_Viewer_base):
         ## TODO for your custom plugin
         if param.name() == "amplitude":
            self.controller.amplitude = Q_(param.value(), param.opts['suffix'])  # when writing your own plugin replace this line
-#        elif ...
+        elif param.name() =='frequency':
+            self.controller.frequency = Q_(param.value(), 'Hz')
         ##
 
     def ini_detector(self, controller=None):

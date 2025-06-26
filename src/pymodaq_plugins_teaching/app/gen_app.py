@@ -3,13 +3,14 @@ from pymodaq_gui.utils.dock import Dock
 from qtpy import QtWidgets
 from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D
 
+from typing import Optional
 
 class GenApp(CustomApp):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.viewer1D_raw: Viewer1D = None
-        self.viewer1D_fft: Viewer1D = None
+        self.viewer1D_raw: Optional[Viewer1D] = None
+        self.viewer1D_fft: Optional[Viewer1D] = None
         self.setup_ui()
 
     def setup_docks(self):

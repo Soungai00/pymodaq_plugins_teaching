@@ -8,8 +8,14 @@ from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D, DataToExport, D
 from pymodaq.control_modules.daq_viewer import DAQ_Viewer, DAQTypesEnum
 
 from typing import Optional
+from pymodaq.extensions.utils import CustomExt
 
-class GenApp(CustomApp):
+EXTENSION_NAME = 'Generator'  # the name that will be displayed in the extension list in the
+# dashboard
+CLASS_NAME = 'GenExt'  # this should be the name of your class defined below
+
+
+class GenExt(CustomExt):
     params = [
         {'title': 'Frequency', 'name': 'frequency',
          'type': 'slide', 'value': 10, 'default': 10,

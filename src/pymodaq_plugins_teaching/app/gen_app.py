@@ -6,6 +6,16 @@ class GenApp(CustomApp):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.setup_ui()
+
+    def setup_docks(self):
+        pass
+
+    def setup_actions(self):
+        pass
+
+    def connect_things(self):
+        pass
 
 def main():
     from pymodaq_gui.utils.utils import mkQApp

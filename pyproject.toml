@@ -50,6 +50,7 @@ classifiers = [
 
 [project.scripts]
 genapp = "pymodaq_plugins_teaching.app.gen_app:main"
+genext = "pymodaq_plugins_teaching.extensions.gen_ext:main"
 
 [build-system]
 requires = [

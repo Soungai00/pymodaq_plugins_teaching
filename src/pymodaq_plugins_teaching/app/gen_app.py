@@ -1,5 +1,5 @@
 from  pymodaq_gui.utils.custom_app import CustomApp
-
+from pymodaq_gui.utils.dock import Dock
 
 class GenApp(CustomApp):
 
@@ -9,7 +9,13 @@ class GenApp(CustomApp):
         self.setup_ui()
 
     def setup_docks(self):
-        pass
+        self.docks['daq_viewer'] = Dock('DAQViewer Generator')
+        self.docks['raw_viewer'] = Dock('Raw Viewer')
+        self.docks['fft_viewer'] = Dock('FFT Viewer')
+
+        self.dockarea.addDock(self.docks['daq_viewer'])
+        self.dockarea.addDock(self.docks['raw_viewer'], 'right')
+        self.dockarea.addDock(self.docks['fft_viewer'], 'bottom', self.docks['raw_viewer'])
 
     def setup_actions(self):
         pass

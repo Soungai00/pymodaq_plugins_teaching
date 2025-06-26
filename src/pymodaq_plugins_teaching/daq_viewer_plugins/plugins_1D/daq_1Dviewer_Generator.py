@@ -34,7 +34,7 @@ class DAQ_1DViewer_Generator(DAQ_Viewer_base):
     """
     params = comon_parameters+[
         {'title': 'Npts:', 'name': 'npts', 'type': 'int', 'value': 256},
-        {'title': 'Delta time (s):', 'name': 'delta_t', 'type': 'float', 'value': 1e-6},
+        {'title': 'Delta time (s):', 'name': 'delta_t', 'type': 'float', 'value': 1e-3},
         {'title': 'Waveforms:', 'name': 'waveform', 'type': 'list', 'limits': WaveType.names()},
         {'title': 'Amplitude:', 'name': 'amplitude', 'type': 'float', 'value': 1, 'suffix': 'V', 'siPrefix': True},
         ]

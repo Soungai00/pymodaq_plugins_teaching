@@ -3,7 +3,7 @@ from pymodaq_gui.utils.dock import Dock, DockArea
 from qtpy import QtWidgets
 from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D
 
-from pymodaq.control_modules.daq_viewer import DAQ_Viewer
+from pymodaq.control_modules.daq_viewer import DAQ_Viewer, DAQTypesEnum
 
 from typing import Optional
 
@@ -36,6 +36,14 @@ class GenApp(CustomApp):
         main_window.setCentralWidget(dockarea)
         self.docks['daq_viewer'].addWidget(main_window)
         self.daq_viewer = DAQ_Viewer(dockarea)
+
+        self.daq_viewer.daq_type = DAQTypesEnum.DAQ1D
+        QtWidgets.QApplication.processEvents()
+        self.daq_viewer.detector = 'Generator'
+
+        self.daq_viewer.init_hardware_ui(True)
+        QtWidgets.QApplication.processEvents()
+        self.daq_viewer.snap()
 
     def setup_actions(self):
         pass

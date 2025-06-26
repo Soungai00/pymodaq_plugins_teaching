@@ -56,10 +56,11 @@ class GenApp(CustomApp):
                         checkable=True)
 
 
-def connect_things(self):
+    def connect_things(self):
         self.daq_viewer.grab_done_signal.connect(self.get_dwa_and_show)
         # self.daq_viewer.grab_done_signal.connect(
         #     lambda dte: self.viewer1D_raw.show_data(dte[0]))
+        self.connect_action('snap', self.daq_viewer.snap)
 
     def get_dwa_and_show(self, dte: DataToExport):
         self.dwa_raw = dte[0]

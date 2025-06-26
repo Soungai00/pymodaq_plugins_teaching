@@ -7,7 +7,7 @@ from pymodaq_gui.parameter import Parameter
 from pymodaq.control_modules.viewer_utility_classes import DAQ_Viewer_base, comon_parameters, main
 from pymodaq.utils.data import DataFromPlugins, Axis
 
-from pymodaq_plugins_teaching.hardware.generator import Generator
+from pymodaq_plugins_teaching.hardware.generator import Generator, WaveType
 
 
 class DAQ_1DViewer_Generator(DAQ_Viewer_base):
@@ -35,6 +35,8 @@ class DAQ_1DViewer_Generator(DAQ_Viewer_base):
     params = comon_parameters+[
         {'title': 'Npts:', 'name': 'npts', 'type': 'int', 'value': 256},
         {'title': 'Delta time (s):', 'name': 'delta_t', 'type': 'float', 'value': 1e-6},
+        {'title': 'Waveforms:', 'name': 'waveform', 'type': 'list', 'limits': WaveType.names()},
+        {'title': 'Amplitude:', 'name': 'amplitude', 'type': 'float', 'value': 1, 'suffix': 'V', 'siPrefix': True},
         ]
 
     def ini_attributes(self):
@@ -54,8 +56,8 @@ class DAQ_1DViewer_Generator(DAQ_Viewer_base):
             A given parameter (within detector_settings) whose value has been changed by the user
         """
         ## TODO for your custom plugin
-        if param.name() == "a_parameter_you've_added_in_self.params":
-           self.controller.your_method_to_apply_this_param_change()  # when writing your own plugin replace this line
+        if param.name() == "amplitude":
+           self.controller.amplitude = Q_(param.value(), param.opts['suffix'])  # when writing your own plugin replace this line
 #        elif ...
         ##
 

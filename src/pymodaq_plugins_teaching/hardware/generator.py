@@ -55,7 +55,7 @@ class Generator():
 
     @property
     def offset(self):
-        return self._amp
+        return self._offset
 
     @offset.setter
     def offset(self, offset: Q_):
@@ -87,4 +87,4 @@ class Generator():
         time_array = linspace_step_N(Q_(0., 's'), dt, Npts)
 
         if self._wave_type == WaveType.SINUS:
-            return time_array, self.amplitude * np.sin(self.frequency * time_array - self.phase) + self.offset
+            return time_array, self.amplitude * np.sin(2 * np.pi * self.frequency * time_array - self.phase) + self.offset

@@ -44,8 +44,13 @@ class GenApp(CustomApp):
         QtWidgets.QApplication.processEvents()
         self.daq_viewer.detector = 'Generator'
 
+        self.docks['daq_viewer'].setVisible(False)
+
+        #
+
         self.daq_viewer.init_hardware_ui(True)
         QtWidgets.QApplication.processEvents()
+        self.daq_viewer.settings.child('main_settings', 'wait_time').setValue(50)
         self.daq_viewer.snap()
 
     def setup_actions(self):
@@ -61,6 +66,8 @@ class GenApp(CustomApp):
         # self.daq_viewer.grab_done_signal.connect(
         #     lambda dte: self.viewer1D_raw.show_data(dte[0]))
         self.connect_action('snap', self.daq_viewer.snap)
+        self.connect_action('grab', self.daq_viewer.grab)
+        self.connect_action('show', self.docks['daq_viewer'].setVisible)
 
     def get_dwa_and_show(self, dte: DataToExport):
         self.dwa_raw = dte[0]

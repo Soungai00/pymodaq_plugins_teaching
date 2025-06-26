@@ -1,7 +1,7 @@
 from  pymodaq_gui.utils.custom_app import CustomApp
 from pymodaq_gui.utils.dock import Dock, DockArea
 from qtpy import QtWidgets
-from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D
+from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D, DataToExport
 
 from pymodaq.control_modules.daq_viewer import DAQ_Viewer, DAQTypesEnum
 
@@ -49,7 +49,12 @@ class GenApp(CustomApp):
         pass
 
     def connect_things(self):
-        pass
+        #self.daq_viewer.grab_done_signal.connect(self.get_dwa_and_show)
+        self.daq_viewer.grab_done_signal.connect(
+            lambda dte: self.viewer1D_raw.show_data(dte[0]))
+
+    def get_dwa_and_show(self, dte: DataToExport):
+        self.viewer1D_raw.show_data(dte[0])
 
 def main():
     from pymodaq_gui.utils.utils import mkQApp

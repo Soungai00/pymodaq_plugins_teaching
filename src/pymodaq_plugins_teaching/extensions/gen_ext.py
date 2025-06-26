@@ -57,6 +57,8 @@ class GenExt(CustomExt):
         self.daq_viewer.settings.child('main_settings', 'wait_time').setValue(50)
         self.daq_viewer.snap()
 
+        self.dashboard.mainwindow.setVisible(False)
+
     def setup_actions(self):
         self.add_action('snap', 'Snap Data', 'Snapshot2_32', tip='Click to get one data shot',)
         self.add_action('grab', 'Grab Data', 'run_all', tip='Click to continuously grab data',
@@ -71,7 +73,7 @@ class GenExt(CustomExt):
         #     lambda dte: self.viewer1D_raw.show_data(dte[0]))
         self.connect_action('snap', self.daq_viewer.snap)
         self.connect_action('grab', self.daq_viewer.grab)
-        self.connect_action('show', self.docks['daq_viewer'].setVisible)
+        self.connect_action('show', self.dashboard.mainwindow.setVisible)
 
     def value_changed(self, param: Parameter):
         if param.name() == 'frequency':

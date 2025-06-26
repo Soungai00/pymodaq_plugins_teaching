@@ -8,7 +8,7 @@ class GenApp(CustomApp):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.viewer1D: Viewer1D = None
+        self.viewer1D_raw: Viewer1D = None
 
         self.setup_ui()
 
@@ -22,7 +22,7 @@ class GenApp(CustomApp):
         self.dockarea.addDock(self.docks['fft_viewer'], 'bottom', self.docks['raw_viewer'])
 
         widget_1D = QtWidgets.QWidget()
-        self.viewer1D = Viewer1D(widget_1D)
+        self.viewer1D_raw = Viewer1D(widget_1D)
         self.docks['raw_viewer'].addWidget(widget_1D)
 
 

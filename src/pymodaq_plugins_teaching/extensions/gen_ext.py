@@ -26,7 +26,7 @@ class GenExt(CustomExt):
         super().__init__(parent)
         self.viewer1D_raw: Optional[Viewer1D] = None
         self.viewer1D_fft: Optional[Viewer1D] = None
-        self.daq_viewer: DAQ_Viewer = None
+        self.daq_viewer: DAQ_Viewer = self.modules_manager.get_mod_from_name('Generator')
 
         self.dwa_raw: Optional[DataWithAxes] = None
 
@@ -95,19 +95,3 @@ class GenExt(CustomExt):
         self.dwa_ftt = self.dwa_raw.ft()
         self.viewer1D_fft.show_data(self.dwa_ftt.abs())
 
-def main():
-    from pymodaq_gui.utils.utils import mkQApp
-
-
-    import numpy as np
-
-    app = mkQApp('GenApp')
-    area = DockArea()
-    win = QtWidgets.QMainWindow()
-    win.setCentralWidget(area)
-    gen_app = GenApp(area)
-    win.show()
-    app.exec()
-
-if __name__ == '__main__':
-    main()

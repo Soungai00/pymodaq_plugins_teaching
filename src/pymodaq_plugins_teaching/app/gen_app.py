@@ -1,10 +1,14 @@
 from  pymodaq_gui.utils.custom_app import CustomApp
 from pymodaq_gui.utils.dock import Dock
+from qtpy import QtWidgets
+from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D
+
 
 class GenApp(CustomApp):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.viewer1D: Viewer1D = None
 
         self.setup_ui()
 
@@ -17,6 +21,11 @@ class GenApp(CustomApp):
         self.dockarea.addDock(self.docks['raw_viewer'], 'right')
         self.dockarea.addDock(self.docks['fft_viewer'], 'bottom', self.docks['raw_viewer'])
 
+        widget_1D = QtWidgets.QWidget()
+        self.viewer1D = Viewer1D(widget_1D)
+        self.docks['raw_viewer'].addWidget(widget_1D)
+
+
     def setup_actions(self):
         pass
 
@@ -26,7 +35,7 @@ class GenApp(CustomApp):
 def main():
     from pymodaq_gui.utils.utils import mkQApp
     from pymodaq_gui.utils.dock import DockArea
-    from qtpy import QtWidgets
+
     import numpy as np
 
     app = mkQApp('GenApp')

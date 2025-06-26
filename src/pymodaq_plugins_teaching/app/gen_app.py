@@ -1,3 +1,5 @@
+from pyqtgraph.parametertree import Parameter
+
 from  pymodaq_gui.utils.custom_app import CustomApp
 from pymodaq_gui.utils.dock import Dock, DockArea
 from qtpy import QtWidgets
@@ -28,10 +30,12 @@ class GenApp(CustomApp):
         self.docks['daq_viewer'] = Dock('DAQViewer Generator')
         self.docks['raw_viewer'] = Dock('Raw Viewer')
         self.docks['fft_viewer'] = Dock('FFT Viewer')
+        self.docks['settings'] = Dock('Settings')
 
         self.dockarea.addDock(self.docks['daq_viewer'])
         self.dockarea.addDock(self.docks['raw_viewer'], 'right')
         self.dockarea.addDock(self.docks['fft_viewer'], 'bottom', self.docks['raw_viewer'])
+        self.dockarea.addDock(self.docks['settings'], 'right')
 
         self.viewer1D_raw = Viewer1D(QtWidgets.QWidget())
         self.docks['raw_viewer'].addWidget(self.viewer1D_raw.parent)
@@ -51,7 +55,7 @@ class GenApp(CustomApp):
 
         self.docks['daq_viewer'].setVisible(False)
 
-        #
+        self.docks['settings'].addWidget(self.settings_tree)
 
         self.daq_viewer.init_hardware_ui(True)
         QtWidgets.QApplication.processEvents()
@@ -73,6 +77,10 @@ class GenApp(CustomApp):
         self.connect_action('snap', self.daq_viewer.snap)
         self.connect_action('grab', self.daq_viewer.grab)
         self.connect_action('show', self.docks['daq_viewer'].setVisible)
+
+    def value_changed(self, param: Parameter):
+        if param.name() == 'frequency':
+            self.daq_viewer.settings.child('detector_settings', 'frequency').setValue(param.value())
 
     def get_dwa_and_show(self, dte: DataToExport):
         self.dwa_raw = dte[0]

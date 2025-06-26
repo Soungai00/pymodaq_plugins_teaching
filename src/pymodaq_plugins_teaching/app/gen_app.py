@@ -8,6 +8,11 @@ from pymodaq.control_modules.daq_viewer import DAQ_Viewer, DAQTypesEnum
 from typing import Optional
 
 class GenApp(CustomApp):
+    params = [
+        {'title': 'Frequency', 'name': 'frequency',
+         'type': 'slide', 'value': 10, 'default': 10,
+         'limits': (1, 1000), 'subtype': 'linear'},
+                          ]
 
     def __init__(self, parent):
         super().__init__(parent)

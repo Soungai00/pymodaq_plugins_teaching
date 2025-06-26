@@ -10,6 +10,14 @@ from pymodaq.control_modules.daq_viewer import DAQ_Viewer, DAQTypesEnum
 from typing import Optional
 from pymodaq.extensions.utils import CustomExt
 
+
+from pymodaq_plugins_teaching.utils import Config as PluginConfig
+
+plugin_config = PluginConfig()
+
+
+
+
 EXTENSION_NAME = 'Generator'  # the name that will be displayed in the extension list in the
 # dashboard
 CLASS_NAME = 'GenExt'  # this should be the name of your class defined below
@@ -86,3 +94,19 @@ class GenExt(CustomExt):
         self.dwa_ftt = self.dwa_raw.ft()
         self.viewer1D_fft.show_data(self.dwa_ftt.abs())
 
+
+def main():
+    from pymodaq_gui.utils.utils import mkQApp
+    from pymodaq.utils.gui_utils.loader_utils import load_dashboard_with_preset
+
+    app = mkQApp('GenExt')
+
+    preset_file_name = plugin_config('preset')
+    dashboard, extension, win = load_dashboard_with_preset(preset_file_name, EXTENSION_NAME)
+    app.exec()
+
+    return dashboard, extension, win
+
+
+if __name__ == '__main__':
+    main()

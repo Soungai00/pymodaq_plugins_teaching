@@ -48,6 +48,9 @@ classifiers = [
     "Topic :: Software Development :: User Interfaces",
 ]
 
+[project.scripts]
+genapp = "pymodaq_plugins_teaching.app.gen_app:main"
+
 [build-system]
 requires = [
     "hatchling>=1.9.0",

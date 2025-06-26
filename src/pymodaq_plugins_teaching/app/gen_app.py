@@ -49,9 +49,14 @@ class GenApp(CustomApp):
         self.daq_viewer.snap()
 
     def setup_actions(self):
-        pass
+        self.add_action('snap', 'Snap Data', 'Snapshot2_32', tip='Click to get one data shot',)
+        self.add_action('grab', 'Grab Data', 'run_all', tip='Click to continuously grab data',
+                        checkable=True)
+        self.add_action('show', 'Show/Hide Viewer', 'read2', tip='Show/Hide the DAQ_Viewer panel',
+                        checkable=True)
 
-    def connect_things(self):
+
+def connect_things(self):
         self.daq_viewer.grab_done_signal.connect(self.get_dwa_and_show)
         # self.daq_viewer.grab_done_signal.connect(
         #     lambda dte: self.viewer1D_raw.show_data(dte[0]))

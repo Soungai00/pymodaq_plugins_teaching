@@ -101,7 +101,7 @@ def main():
 
     app = mkQApp('GenExt')
 
-    preset_file_name = plugin_config('preset')
+    preset_file_name = plugin_config('defaults', 'preset')
     dashboard, extension, win = load_dashboard_with_preset(preset_file_name, EXTENSION_NAME)
     app.exec()
 

@@ -117,7 +117,7 @@ class DAQ_1DViewer_Generator(DAQ_Viewer_base):
         self.dte_signal.emit(DataToExport(
             name='mydte',
             data=[DataFromPlugins(name='mymock',
-                                  data=[waveform.magnitude],
+                                  data=[waveform.magnitude + 0.1 *np.random.randn(*waveform.shape)],
                                   dim='Data1D', labels=['label00',],
                                   units=waveform.units,
                                   axes=[Axis('Time', units='s',

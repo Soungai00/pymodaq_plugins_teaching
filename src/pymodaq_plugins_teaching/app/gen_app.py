@@ -1,7 +1,7 @@
 from  pymodaq_gui.utils.custom_app import CustomApp
 from pymodaq_gui.utils.dock import Dock, DockArea
 from qtpy import QtWidgets
-from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D, DataToExport
+from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D, DataToExport, DataWithAxes
 
 from pymodaq.control_modules.daq_viewer import DAQ_Viewer, DAQTypesEnum
 
@@ -14,6 +14,9 @@ class GenApp(CustomApp):
         self.viewer1D_raw: Optional[Viewer1D] = None
         self.viewer1D_fft: Optional[Viewer1D] = None
         self.daq_viewer: DAQ_Viewer = None
+
+        self.dwa_raw: Optional[DataWithAxes] = None
+
         self.setup_ui()
 
     def setup_docks(self):
@@ -49,12 +52,16 @@ class GenApp(CustomApp):
         pass
 
     def connect_things(self):
-        #self.daq_viewer.grab_done_signal.connect(self.get_dwa_and_show)
-        self.daq_viewer.grab_done_signal.connect(
-            lambda dte: self.viewer1D_raw.show_data(dte[0]))
+        self.daq_viewer.grab_done_signal.connect(self.get_dwa_and_show)
+        # self.daq_viewer.grab_done_signal.connect(
+        #     lambda dte: self.viewer1D_raw.show_data(dte[0]))
 
     def get_dwa_and_show(self, dte: DataToExport):
-        self.viewer1D_raw.show_data(dte[0])
+        self.dwa_raw = dte[0]
+        self.viewer1D_raw.show_data(self.dwa_raw)
+
+        self.dwa_ftt = self.dwa_raw.ft()
+        self.viewer1D_fft.show_data(self.dwa_ftt.abs())
 
 def main():
     from pymodaq_gui.utils.utils import mkQApp

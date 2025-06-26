@@ -3,6 +3,8 @@ from pymodaq_gui.utils.dock import Dock
 from qtpy import QtWidgets
 from pymodaq_gui.plotting.data_viewers.viewer1D import Viewer1D
 
+from pymodaq.control_modules.daq_viewer import DAQ_Viewer
+
 from typing import Optional
 
 class GenApp(CustomApp):
